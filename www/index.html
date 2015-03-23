@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>HTML5 Example: Geolocation</title>
+</head>
+<body>
+<a id="email" href="mailto:?subject=My%20Location&body=" >Email my Location</a>
+<section id="wrapper">
+ <header>
+      <h2>HTML 5 Example: Geolocation</h2>
+    </header>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <article>
+      <p>Finding your location: <span id="status">checking...</span></p>
+    </article>
+<script>
+function success(position) {
+  var s = document.querySelector('#status');
+  s.innerHTML = "found you!";
+  s.className = 'success';
+  var mapcanvas = document.createElement('div');
+  mapcanvas.id = 'mapcanvas';
+  mapcanvas.style.height = '400px';
+  mapcanvas.style.width = '560px';
+  document.querySelector('article').appendChild(mapcanvas);
+var em = document.getElementById('email');
+var attr = em.getAttribute('href');
+attr = attr + escape('http://maps.google.com/?q='+position.coords.latitude+','+position.coords.longitude);
+em.setAttribute('href', attr);
+  var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+  var myOptions = {
+    zoom: 15,
+    center: latlng,
+    mapTypeControl: false,
+    navigationControlOptions: {style: google.maps.NavigationControlStyle.SMALL},
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  var map = new google.maps.Map(document.getElementById("mapcanvas"), myOptions);
+  var marker = new google.maps.Marker({
+      position: latlng, 
+      map: map, 
+      title:"You are here!"
+  });
+}
+function error(msg) {
+  var s = document.querySelector('#status');
+  s.innerHTML = typeof msg == 'string' ? msg : "failed";
+  s.className = 'fail';
+}
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(success, error);
+} else {
+  error('not supported');
+}
+</script>
+</section>
+<hr />
+<i>Example adapted from Remy Sharp's HTML 5 demo, released under the Creative Commons Share Alike 2.0 license.</i>
+</body>
+</html>
